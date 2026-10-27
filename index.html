@@ -40,7 +40,7 @@
     <div class="result" id="result"></div>
 
     <script>
-        const API_BASE = 'http://localhost:7888';
+        const API_BASE = 'https://sour-doodles-deny.loca.lt';
         const refsInput = document.getElementById('refs');
         const refPreview = document.getElementById('refPreview');
 
@@ -80,7 +80,7 @@
                 const imgUrl = URL.createObjectURL(blob);
                 document.getElementById('result').innerHTML = `<p>✅ 生成完成：</p><img src="${imgUrl}">`;
             } catch (e) {
-                document.getElementById('result').innerHTML = '<p style="color:red">❌ 生图失败，请确认本地服务已启动</p>';
+                document.getElementById('result').innerHTML = '<p style="color:red">❌ 生图失败，请稍后重试</p>';
             }
         }
     </script>
