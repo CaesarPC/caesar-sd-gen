@@ -75,7 +75,7 @@
             const files = Array.from(refsInput.files).slice(0,3);
             files.forEach((f,i) => formData.append(`ref_${i}`, f));
             try {
-                const res = await fetch(`${API_BASE}/gen`, { method: 'POST', body: formData });
+                const res = await fetch(`${API_BASE}/api/gen`, { method: 'POST', body: formData });
                 const blob = await res.blob();
                 const imgUrl = URL.createObjectURL(blob);
                 document.getElementById('result').innerHTML = `<p>✅ 生成完成：</p><img src="${imgUrl}">`;
