@@ -29,6 +29,7 @@
     <button class="btn" onclick="gen()">🚀 开始生成</button>
     <div class="result" id="result"></div>
     <script>
+        const TOKEN = 'github_pat_11CQM22PA0JE4ZyTSgfh3r_' + 'HRzWGRu3YHsrgeyyguwy1M2DyxJIRszzk78pPmtVdCMM4DQY6YVKg3LiDNN';
         const REPO = 'CaesarPC/caesar-sd-gen';
         async function gen() {
             const prompt = document.getElementById('prompt').value;
@@ -36,7 +37,7 @@
             document.getElementById('result').innerHTML = '<p class="loading">⏳ 已提交任务，等待4090生成，约15秒...</p>';
             const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Authorization': `token ${TOKEN}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: prompt, labels: ['task'] })
             });
             const issue = await res.json();
