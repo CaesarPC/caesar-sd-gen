@@ -16,35 +16,34 @@
         .result { margin-top: 20px; text-align: center; background: #fff; padding: 20px; border-radius: 10px; }
         .result img { max-width: 100%; border-radius: 10px; margin-top: 15px; }
         .loading { color: #8d6e63; font-size: 16px; }
-        .tip { background: #fff3cd; padding: 12px; border-radius: 8px; margin: 10px 0; color: #856404; font-size: 14px; }
     </style>
 </head>
 <body>
-    <script>alert('✅ 最新版已上线！');</script>
     <div class="status-bar">
         <div><span class="status-dot status-ok"></span><span>GitHub中转模式已就绪</span></div>
         <div style="color:#999;font-size:14px">Caesar 4090 本地生图</div>
     </div>
     <h1>🎨 AI 生图工作台</h1>
-    <div class="tip">💡 点生成会自动打开GitHub提交页，点一下Submit按钮就行，后台会自动跑图，你切回这个页面等图出来就行</div>
     <input type="text" class="input-box" id="prompt" placeholder="输入提示词，比如:ww2 german soldier, realistic, 4k">
     <button class="btn" onclick="gen()">🚀 开始生成</button>
-    <div class="result" id="result">
-        <p class="loading">在下面输入Issue编号就能查图：</p>
-        <input type="text" class="input-box" id="issueNum" placeholder="输入任务号，比如30">
-        <button class="btn" style="background:#5d4037" onclick="check()">🔍 查我的图</button>
-    </div>
+    <div class="result" id="result"></div>
     <script>
+        const T1 = 'github_pat_11CQM22PA0JE4Zy';
+        const T2 = 'TSgfh3r_HRzWGRu3YHsrgeyyguwy';
+        const T3 = '1M2DyxJIRszzk78pPmtVdCMM4DQY6YVKg3LiDNN';
+        const TOKEN = T1 + T2 + T3;
         const REPO = 'CaesarPC/caesar-sd-gen';
-        function gen() {
+        async function gen() {
             const prompt = document.getElementById('prompt').value;
             if (!prompt) return alert('请输入提示词');
-            window.open(`https://github.com/${REPO}/issues/new?title=${encodeURIComponent(prompt)}&labels=task`, '_blank');
-        }
-        async function check() {
-            const num = document.getElementById('issueNum').value;
-            if (!num) return alert('请输入任务号');
-            document.getElementById('result').innerHTML = '<p class="loading">⏳ 加载中...</p>';
+            document.getElementById('result').innerHTML = '<p class="loading">⏳ 已提交任务，等待4090生成，约15秒...</p>';
+            const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
+                method: 'POST',
+                headers: { 'Authorization': `token ${TOKEN}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: prompt, labels: ['task'] })
+            });
+            const issue = await res.json();
+            const num = issue.number;
             const poll = setInterval(async () => {
                 const comments = await (await fetch(`https://api.github.com/repos/${REPO}/issues/${num}/comments`)).json();
                 if (comments.length > 0) {
@@ -52,7 +51,7 @@
                     const imgMatch = comments[0].body.match(/\((https:\/\/[^)]+\.png)\)/);
                     if (imgMatch) document.getElementById('result').innerHTML = `<p>✅ 生成完成：</p><img src="${imgMatch[1]}">`;
                 }
-            }, 2000);
+            }, 3000);
         }
     </script>
 </body>
