@@ -31,12 +31,11 @@
     <script>
         const TOKEN = 'github_pat_11CQM22PA0JE4ZyTSgfh3r_' + 'HRzWGRu3YHsrgeyyguwy1M2DyxJIRszzk78pPmtVdCMM4DQY6YVKg3LiDNN';
         const REPO = 'CaesarPC/caesar-sd-gen';
-        const CORS = 'https://api.allorigins.win/raw?url=';
         async function gen() {
             const prompt = document.getElementById('prompt').value;
             if (!prompt) return alert('请输入提示词');
             document.getElementById('result').innerHTML = '<p class="loading">⏳ 已提交任务，等待4090生成，约15秒...</p>';
-            const res = await fetch(CORS + encodeURIComponent(`https://api.github.com/repos/${REPO}/issues`), {
+            const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
                 method: 'POST',
                 headers: { 'Authorization': `token ${TOKEN}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: prompt, labels: ['task'] })
@@ -45,7 +44,7 @@
             const num = issue.number;
             const poll = setInterval(async () => {
                 try {
-                    const comments = await (await fetch(CORS + encodeURIComponent(`https://api.github.com/repos/${REPO}/issues/${num}/comments`))).json();
+                    const comments = await (await fetch(`https://api.github.com/repos/${REPO}/issues/${num}/comments`)).json();
                     if (comments.length > 0) {
                         clearInterval(poll);
                         const imgMatch = comments[0].body.match(/\((https:\/\/[^)]+\.png)\)/);
