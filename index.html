@@ -43,13 +43,15 @@
             const issue = await res.json();
             const num = issue.number;
             const poll = setInterval(async () => {
-                const comments = await (await fetch(`https://api.github.com/repos/${REPO}/issues/${num}/comments`)).json();
-                if (comments.length > 0) {
-                    clearInterval(poll);
-                    const imgMatch = comments[0].body.match(/\((https:\/\/[^)]+\.png)\)/);
-                    if (imgMatch) document.getElementById('result').innerHTML = `<p>✅ 生成完成：</p><img src="${imgMatch[1]}">`;
-                }
-            }, 3000);
+                try {
+                    const comments = await (await fetch(`https://api.github.com/repos/${REPO}/issues/${num}/comments`)).json();
+                    if (comments.length > 0) {
+                        clearInterval(poll);
+                        const imgMatch = comments[0].body.match(/\((https:\/\/[^)]+\.png)\)/);
+                        if (imgMatch) document.getElementById('result').innerHTML = `<p>✅ 生成完成：</p><img src="${imgMatch[1]}">`;
+                    }
+                } catch(e) {}
+            }, 2000);
         }
     </script>
 </body>
